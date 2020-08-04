@@ -1,0 +1,10 @@
+### .env
+```
+APP_PORT=5000
+MONGODB_ADDRESS=localhost
+MONGODB_DATABASE=Node.Express.Restful-Forum
+JWT_SECRET=key
+SALT_ROUND=10
+ROOTADMIN_USERNAME=root
+ROOTADMIN_PASSWORD=password
+```
