@@ -5,7 +5,7 @@ import cors from 'cors';
 import compression from 'compression';
 import helmet from 'helmet';
 
-import { notFound } from './middleware/http404';
+import { notFound } from './middleware/http4xxErrors';
 
 dotenv.config(); // load env
 
