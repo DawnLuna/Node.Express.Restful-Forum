@@ -6,6 +6,8 @@ import compression from 'compression';
 import helmet from 'helmet';
 
 import { notFound } from './middleware/http4xxErrors';
+import forumRoutes from './routes/forumRoute'
+import userRoutes from './routes/userRoute'
 
 dotenv.config(); // load env
 
@@ -27,7 +29,9 @@ app.options('*', cors());
 app.use(helmet());
 app.use(compression());
 
-
+//routes
+forumRoutes(app);
+userRoutes(app);
 
 app.use(notFound);
 
