@@ -1,6 +1,9 @@
 import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
+import { userRegistrationValidator, userLoginValidator } from '../middleware/validators';
+import { register, login } from '../controllers/userController';
+
 const userRoutes = (app) => {
 
     /*
@@ -18,7 +21,7 @@ const userRoutes = (app) => {
     *  post: register new user (validator requird)
     */
     app.route('/user/register')
-        .post(notImplemented)
+        .post(userRegistrationValidator, register)
         .all(methodNotAllowed);
 
     /*
@@ -26,7 +29,7 @@ const userRoutes = (app) => {
     *  post: login user
     */
     app.route('/user/login')
-        .post(notImplemented)
+        .post(userLoginValidator, login)
         .all(methodNotAllowed);
 
     /*
