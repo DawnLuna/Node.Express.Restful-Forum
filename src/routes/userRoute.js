@@ -2,7 +2,7 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
 import { userRegistrationValidator, userLoginValidator } from '../middleware/validators';
-import { register, login } from '../controllers/userController';
+import { register, login } from '../controllers/authController';
 
 const userRoutes = (app) => {
 
