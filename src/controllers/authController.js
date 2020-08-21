@@ -63,8 +63,7 @@ export const authCheck = (req, res, next) => {
     if (req.headers && req.headers.authorization) {
         jwt.verify(req.headers.authorization, process.env.JWT_SECRET, (err, decode) => {
             if (err) {
-                req.user = undefined;
-                next();
+                return res.status(401).json({ succes: false, message: "Authentication failed!", error:err });
             }
             User.findById(
                 decode.uid,
@@ -77,6 +76,7 @@ export const authCheck = (req, res, next) => {
                     } else if (user.banned === true) {
                         return res.status(401).json({ succes: false, message: "You have been banned!" });
                     } else {
+                        req.user = decode;
                         next();
                     }
                 }
