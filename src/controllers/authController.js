@@ -63,7 +63,7 @@ export const authCheck = (req, res, next) => {
     if (req.headers && req.headers.authorization) {
         jwt.verify(req.headers.authorization, process.env.JWT_SECRET, (err, decode) => {
             if (err) {
-                return res.status(401).json({ succes: false, message: "Authentication failed!", error:err });
+                return res.status(401).json({ succes: false, message: "Authentication failed!", error: err });
             }
             User.findById(
                 decode.uid,
@@ -91,6 +91,33 @@ export const authCheck = (req, res, next) => {
 /*
  * todo: change password
  */
+export const changePassword = (req, res) => {
+    console.log(req.body);
+    User.findById(
+        req.user.uid,
+        (err, user) => {
+            if (err) {
+                return res.status(401).json({ succes: false, message: "Authentication failed!", error: err });
+            } else {
+                if (!user.comparePassword(req.body.oldPassword, user.password)) {
+                    return res.status(401).json({ succes: false, message: "Old password dose not match." });
+                } else {
+                    user.password = bcrypt.hashSync(req.body.newPassword, +process.env.SALT_ROUND);
+                    user.save(
+                        (saveErr, updatedUser) => {
+                            if (saveErr) {
+                                return res.status(401).json({ succes: false, message: "Error updating!", error: err });
+                            } else {
+                                return res.status(200).json({ succes: true, message: "Password has been updated!" });
+                            }
+                        }
+                    );
+
+                }
+            }
+        }
+    );
+}
 
 /*
  * todo: reset password

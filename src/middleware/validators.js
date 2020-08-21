@@ -66,3 +66,32 @@ export const userLoginValidator = [
         next();
     }
 ];
+
+export const updatePasswordValidator = [
+    check('oldPassword')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Old password required!')
+        .isLength({ min: 6 })
+        .withMessage('Password requires minimum 6 characters!')
+        .isLength({ max: 20 })
+        .withMessage('Password requires manimum 20 characters!')
+        .bail(),
+    check('newPassword')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('New password required!')
+        .isLength({ min: 6 })
+        .withMessage('Password requires minimum 6 characters!')
+        .isLength({ max: 20 })
+        .withMessage('Password requires manimum 20 characters!')
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    }
+];

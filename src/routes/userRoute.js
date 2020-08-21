@@ -1,8 +1,8 @@
 import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
-import { userRegistrationValidator, userLoginValidator } from '../middleware/validators';
-import { register, login } from '../controllers/authController';
+import { userRegistrationValidator, userLoginValidator, updatePasswordValidator } from '../middleware/validators';
+import { register, login, authCheck, changePassword } from '../controllers/authController';
 
 const userRoutes = (app) => {
 
@@ -38,7 +38,7 @@ const userRoutes = (app) => {
     *  post: reset password (validator requird)
     */
     app.route('/user/password')
-        .put(notImplemented)
+        .put(authCheck, updatePasswordValidator, changePassword)
         .post(notImplemented)
         .all(methodNotAllowed);
 
