@@ -58,3 +58,40 @@ export const login = (req, res) => {
         }
     });
 }
+
+export const authCheck = (req, res, next) => {
+    if (req.headers && req.headers.authorization) {
+        jwt.verify(req.headers.authorization, process.env.JWT_SECRET, (err, decode) => {
+            if (err) {
+                req.user = undefined;
+                next();
+            }
+            User.findById(
+                decode.uid,
+                {},
+                (err, user) => {
+                    if (err) {
+                        return res.status(401).json({ succes: false, message: "Login required!" });
+                    } else if (!user) {
+                        return res.status(401).json({ succes: false, message: "User not found" });
+                    } else if (user.banned === true) {
+                        return res.status(401).json({ succes: false, message: "You have been banned!" });
+                    } else {
+                        next();
+                    }
+                }
+            );
+        })
+    } else {
+        req.user = undefined;
+        next();
+    }
+}
+
+/*
+ * todo: change password
+ */
+
+/*
+ * todo: reset password
+ */
