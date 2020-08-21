@@ -3,6 +3,7 @@ import { notImplemented } from '../middleware/http5xxErrors';
 
 import { userRegistrationValidator, userLoginValidator, updatePasswordValidator } from '../middleware/validators';
 import { register, login, authCheck, changePassword } from '../controllers/authController';
+import { getUserInfoById } from '../controllers/userController';
 
 const userRoutes = (app) => {
 
@@ -47,7 +48,7 @@ const userRoutes = (app) => {
     *  get: get info of the user by uid (logging requird)
     */
     app.route('/user/:uid')
-        .get(notImplemented)
+        .get(getUserInfoById)
         .all(methodNotAllowed);
 
 };
