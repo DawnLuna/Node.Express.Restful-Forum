@@ -88,16 +88,13 @@ export const authCheck = (req, res, next) => {
     }
 }
 
-/*
- * todo: change password
- */
+
 export const changePassword = (req, res) => {
-    console.log(req.body);
     User.findById(
         req.user.uid,
         (err, user) => {
             if (err) {
-                return res.status(401).json({ succes: false, message: "Authentication failed!", error: err });
+                return res.status(401).json({ succes: false, message: "Error finding user!", error: err });
             } else {
                 if (!user.comparePassword(req.body.oldPassword, user.password)) {
                     return res.status(401).json({ succes: false, message: "Old password dose not match." });
