@@ -95,3 +95,26 @@ export const updatePasswordValidator = [
         next();
     }
 ];
+
+export const addSectionValidator = [
+    check('title')
+        .trim()
+        .escape()
+        .not()
+        .isEmpty()
+        .withMessage('Title required!')
+        .isLength({ min: 4 })
+        .withMessage('Minimum 4 characters required!')
+        .bail(),
+    check('description')
+        .trim()
+        .escape()
+        .not()
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    },
+];

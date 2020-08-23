@@ -1,6 +1,10 @@
 import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
+import { authCheck } from '../controllers/authController';
+import { addSectionValidator } from '../middleware/validators';
+import { addSection } from '../controllers/forumController';
+
 const forumRoutes = (app) => {
 
     /* 
@@ -19,7 +23,7 @@ const forumRoutes = (app) => {
     */
     app.route('/section')
         .get(notImplemented)
-        .post(notImplemented)
+        .post(authCheck, addSectionValidator, addSection)
         .all(methodNotAllowed);
 
     /*
