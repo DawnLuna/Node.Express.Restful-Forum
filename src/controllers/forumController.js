@@ -2,6 +2,24 @@ import mongoose from 'mongoose';
 
 import { Section } from '../models/forumSchema';
 
+export const getSections = (req, res) => {
+    Section.find(
+        { hidden: false },
+        {
+            __v: 0,
+            hidden: 0,
+            createdAt: 0
+        },
+        (err, sections) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(sections);
+            }
+        }
+    );
+};
+
 export const addSection = (req, res) => {
     let newSection = new Section(req.body);
     newSection.save((err, section) => {
