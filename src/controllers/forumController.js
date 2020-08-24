@@ -113,3 +113,27 @@ export const postThread = (req, res) => {
         }
     });
 };
+
+export const editThread = (req, res) => {
+    Thread.findOneAndUpdate(
+        {
+            _id: req.params.tid,
+            author: req.user.uid,
+        },
+        {
+            title: req.body.title,
+            content: req.body.content
+        },
+        {
+            returnOriginal: false
+        },
+        (err, thread) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                thread.__v = undefined;
+                res.json(thread);
+            }
+        }
+    );
+}

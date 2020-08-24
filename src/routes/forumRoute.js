@@ -3,7 +3,7 @@ import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
 import { addSectionValidator, threadValidator } from '../middleware/validators';
-import { getSections, addSection, editSection, getThreads, postThread } from '../controllers/forumController';
+import { getSections, addSection, editSection, getThreads, postThread, editThread } from '../controllers/forumController';
 
 const forumRoutes = (app) => {
 
@@ -50,7 +50,7 @@ const forumRoutes = (app) => {
     app.route('/thread/:tid')
         .get(notImplemented)
         .post(notImplemented)
-        .put(notImplemented)
+        .put(authCheck, loginCheck, threadValidator,editThread)
         .delete(notImplemented)
         .all(methodNotAllowed);
 
