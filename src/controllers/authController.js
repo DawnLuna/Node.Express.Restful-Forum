@@ -70,11 +70,15 @@ export const authCheck = (req, res, next) => {
                 {},
                 (err, user) => {
                     if (err) {
-                        return res.status(401).json({ succes: false, message: "Login required!" });
+                        req.user = undefined;
+                        next();
+                        //return res.status(401).json({ succes: false, message: "Login required!" });
                     } else if (!user) {
-                        return res.status(401).json({ succes: false, message: "User not found" });
-                    } else if (user.banned === true) {
-                        return res.status(401).json({ succes: false, message: "You have been banned!" });
+                        req.user = undefined;
+                        next();
+                        //return res.status(401).json({ succes: false, message: "User not found" });
+                    //} else if (user.banned === true) {
+                        //return res.status(401).json({ succes: false, message: "You have been banned!" });
                     } else {
                         req.user = decode;
                         next();
@@ -88,6 +92,10 @@ export const authCheck = (req, res, next) => {
     }
 }
 
+export const loginCheck = (req, res, next) => {
+    if(!req.user) return res.status(401).json({ succes: false, message: "Login required!" });
+    next();
+}
 
 export const changePassword = (req, res) => {
     User.findById(
