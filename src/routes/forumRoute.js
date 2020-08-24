@@ -3,7 +3,7 @@ import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck } from '../controllers/authController';
 import { addSectionValidator } from '../middleware/validators';
-import { addSection } from '../controllers/forumController';
+import { addSection, editSection } from '../controllers/forumController';
 
 const forumRoutes = (app) => {
 
@@ -36,7 +36,7 @@ const forumRoutes = (app) => {
     app.route('/section/:sid')
         .get(notImplemented)
         .post(notImplemented)
-        .put(notImplemented)
+        .put(authCheck, addSectionValidator, editSection)
         .delete(notImplemented)
         .all(methodNotAllowed);
 
