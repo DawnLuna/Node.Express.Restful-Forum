@@ -137,3 +137,29 @@ export const editThread = (req, res) => {
         }
     );
 }
+
+export const getThread = (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.tid)) {
+        return res.status(400).json({ succes: false, message: "Invalid thread id!" });
+    }
+    Thread.findOne(
+        {
+            _id: req.params.tid
+        },
+        {
+            __v: 0
+        }
+    ).populate(
+        { path: 'section', select: 'title' }
+    ).populate(
+        { path: 'author', select: 'username' }
+    ).exec(
+        (err, thread) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(thread);
+            }
+        }
+    );
+};
