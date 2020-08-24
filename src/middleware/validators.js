@@ -118,3 +118,28 @@ export const addSectionValidator = [
         next();
     },
 ];
+
+export const threadValidator = [
+    check('title')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Title required!')
+        .isLength({ min: 2 })
+        .withMessage('Minimum 2 characters required!')
+        .bail(),
+    check('content')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Content required!')
+        .isLength({ min: 15 })
+        .withMessage('Minimum 15 characters required!')
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    },
+];

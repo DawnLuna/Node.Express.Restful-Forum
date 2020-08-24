@@ -1,9 +1,9 @@
 import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
-import { authCheck } from '../controllers/authController';
-import { addSectionValidator } from '../middleware/validators';
-import { getSections, addSection, editSection } from '../controllers/forumController';
+import { authCheck, loginCheck } from '../controllers/authController';
+import { addSectionValidator, threadValidator } from '../middleware/validators';
+import { getSections, addSection, editSection, getThreads, postThread } from '../controllers/forumController';
 
 const forumRoutes = (app) => {
 
@@ -23,7 +23,7 @@ const forumRoutes = (app) => {
     */
     app.route('/section')
         .get(getSections)
-        .post(authCheck, addSectionValidator, addSection)
+        .post(authCheck, loginCheck, addSectionValidator, addSection)
         .all(methodNotAllowed);
 
     /*
@@ -34,9 +34,9 @@ const forumRoutes = (app) => {
     *  delete: hide the section by id (logging requird)
     */
     app.route('/section/:sid')
-        .get(notImplemented)
-        .post(notImplemented)
-        .put(authCheck, addSectionValidator, editSection)
+        .get(getThreads)
+        .post(authCheck, loginCheck, threadValidator, postThread)
+        .put(authCheck, loginCheck, addSectionValidator, editSection)
         .delete(notImplemented)
         .all(methodNotAllowed);
 

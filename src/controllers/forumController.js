@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { Section } from '../models/forumSchema';
+import { Section, Thread, Reply } from '../models/forumSchema';
 
 export const getSections = (req, res) => {
     Section.find(
@@ -59,3 +59,57 @@ export const editSection = (req,res) => {
         }
     );
 }
+
+export const getThreads = (req, res) => {
+    let sid = req.params.sid;
+    Thread.find(
+        {
+            section: sid
+        },
+        {
+            section: 0,
+            content: 0,
+            __v: 0
+        }
+    ).populate({ path: 'author', select: 'username' }).exec(
+        (err, threads) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(threads);
+            }
+        }
+    );
+};
+
+export const postThread = (req, res) => {
+    let threadData = {
+        author: req.user.uid,
+        section: req.params.sid,
+        title: req.body.title,
+        content: req.body.content
+    };
+    let newThread = new Thread(threadData);
+    newThread.save((err, thread) => {
+        if (err) {
+            res.send(err.massage);
+        } else {
+            thread.__v = undefined;
+            Section.findOneAndUpdate(
+                { _id: thread.section },
+                { $inc: { threadCount: 1 } },
+                {
+                    returnOriginal: false,
+                    upsert: false
+                }, (countErr, section) => {
+                    Thread.populate(thread, { path: 'author', select: 'username' },
+                        (err, fullTread) => {
+                            if (err) return res.json(thread);
+                            return res.json(fullTread);
+                        }
+                    );
+                }
+            );
+        }
+    });
+};
