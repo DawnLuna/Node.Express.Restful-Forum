@@ -2,8 +2,8 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
-import { addSectionValidator, threadValidator } from '../middleware/validators';
-import { getSections, addSection, editSection, getThreads, postThread, editThread, getThread } from '../controllers/forumController';
+import { addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
+import { getSections, addSection, editSection, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply } from '../controllers/forumController';
 
 const forumRoutes = (app) => {
 
@@ -49,7 +49,7 @@ const forumRoutes = (app) => {
     */
     app.route('/thread/:tid')
         .get(getThread)
-        .post(notImplemented)
+        .post(authCheck, loginCheck, replyValidator, postReply)
         .put(authCheck, loginCheck, threadValidator,editThread)
         .delete(notImplemented)
         .all(methodNotAllowed);
@@ -59,7 +59,7 @@ const forumRoutes = (app) => {
     *  get: get all replies from the thread by id
     */
     app.route('/getreply/:tid')
-    .get(notImplemented)
+    .get(getReplies)
     .all(methodNotAllowed);
 
     /*
@@ -69,7 +69,7 @@ const forumRoutes = (app) => {
     *  delete: hide the reply by id (logging requird)
     */
     app.route('/reply/:pid')
-    .get(notImplemented)
+    .get(getReply)
     .put(notImplemented)
     .delete(notImplemented)
     .all(methodNotAllowed);

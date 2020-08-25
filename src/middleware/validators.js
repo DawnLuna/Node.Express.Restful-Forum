@@ -143,3 +143,20 @@ export const threadValidator = [
         next();
     },
 ];
+
+export const replyValidator = [
+    check('content')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Content required!')
+        .isLength({ min: 8 })
+        .withMessage('Minimum 8 characters required!')
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    },
+];

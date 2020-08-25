@@ -163,3 +163,83 @@ export const getThread = (req, res) => {
         }
     );
 };
+
+export const getReplies = (req, res) => {
+    let tid = req.params.tid;
+    Reply.find(
+        {
+            tid: tid
+        },
+        {
+            tid: 0,
+            __v: 0
+        }
+    ).populate({ path: 'author', select: 'username' }).exec(
+        (err, posts) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(posts);
+            }
+        }
+    );
+}
+
+export const postReply = (req, res) => {
+    let replyData = {
+        author: req.user.uid,
+        tid: req.params.tid,
+        content: req.body.content
+    }
+    let newReply = new Reply(replyData);
+    newReply.save((err, reply) => {
+        if (err) {
+            res.send(err.massage);
+        } else {
+            reply.__v = undefined;
+            Thread.findOneAndUpdate(
+                { _id: reply.tid },
+                {
+                    $inc: { replyCount: 1 }
+                },
+                {
+                    returnOriginal: false,
+                    upsert: false
+                }, (countErr, thread) => {
+                    Reply.populate(reply, { path: 'author', select: 'username' },
+                        (err, fullReply) => {
+                            if (err) return res.json(reply);
+                            return res.json(fullReply);
+                        }
+                    );
+                }
+            );
+        }
+    });
+};
+
+export const getReply = (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.pid)) {
+        return res.status(400).json({ succes: false, message: "Invalid reply id!" });
+    }
+    Reply.findOne(
+        {
+            _id: req.params.pid
+        },
+        {
+            __v: 0
+        }
+    ).populate(
+        { path: 'tid', select: 'title' }
+    ).populate(
+        { path: 'author', select: 'username' }
+    ).exec(
+        (err, thread) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(thread);
+            }
+        }
+    );
+};

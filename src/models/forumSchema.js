@@ -34,4 +34,4 @@ const ReplySchema = new Schema({
     { timestamps: true }
 );
 
-export const Reply = mongoose.model('Post', ReplySchema);
+export const Reply = mongoose.model('Reply', ReplySchema);
