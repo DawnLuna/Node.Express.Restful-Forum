@@ -243,3 +243,26 @@ export const getReply = (req, res) => {
         }
     );
 };
+
+export const editReply = (req, res) => {
+    Reply.findOneAndUpdate(
+        {
+            _id: req.params.pid,
+            author: req.user.uid,
+        },
+        {
+            content: req.body.content
+        },
+        {
+            returnOriginal: false
+        },
+        (err, reply) => {
+            if (err) {
+                res.send(err.massages);
+            } else {
+                reply.__v = undefined;
+                res.json(reply);
+            }
+        }
+    );
+}
