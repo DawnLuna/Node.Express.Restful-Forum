@@ -17,6 +17,7 @@ export const Forum = mongoose.model('Forum', ForumSchema);
 const SectionSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, default: '' },
+    admins: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
     hidden: { type: Boolean, default: false },
     threadCount: { type: Number, default: 0 }
 },
