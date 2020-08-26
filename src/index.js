@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import cors from 'cors';
 import compression from 'compression';
 import helmet from 'helmet';
@@ -9,7 +9,6 @@ import { notFound } from './middleware/http4xxErrors';
 import forumRoutes from './routes/forumRoute'
 import userRoutes from './routes/userRoute'
 
-dotenv.config(); // load env
 
 const app = express();
 const PORT = process.env.APP_PORT;
