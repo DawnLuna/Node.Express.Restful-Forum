@@ -2,6 +2,18 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
+const ForumSchema = new Schema({
+    id: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    shortDescription: { type: String, required: true },
+    admins: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+},
+    { timestamps: true }
+);
+
+export const Forum = mongoose.model('Forum', ForumSchema);
+
 const SectionSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, default: '' },

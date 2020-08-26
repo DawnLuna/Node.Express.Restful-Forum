@@ -8,7 +8,9 @@
     "debug-x": "DEBUG=express:* nodemon --exec babel-node ./src/index.js",
     "debug-win": "set DEBUG=express:* & nodemon --exec babel-node ./src/index.js",
     "build": "babel src --out-dir dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "reset-forum": "babel-node ./src/scripts/reset.js",
+    "init-forum": "babel-node ./src/scripts/initiator.js"
   },
   "author": "",
   "license": "MIT",
