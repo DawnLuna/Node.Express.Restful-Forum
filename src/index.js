@@ -6,8 +6,9 @@ import compression from 'compression';
 import helmet from 'helmet';
 
 import { notFound } from './middleware/http4xxErrors';
-import forumRoutes from './routes/forumRoute'
-import userRoutes from './routes/userRoute'
+import { loadAdmins } from './middleware/admins';
+import forumRoutes from './routes/forumRoute';
+import userRoutes from './routes/userRoute';
 
 
 const app = express();
@@ -27,6 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 app.options('*', cors());
 app.use(helmet());
 app.use(compression());
+
+//load admins
+loadAdmins(app);
 
 //routes
 forumRoutes(app);
