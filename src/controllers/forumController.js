@@ -9,13 +9,17 @@ export const getForum = (req, res) => {
         __v: 0,
         createdAt: 0,
         updatedAt: 0
-    }, (err, forum) => {
-        if (err) {
-            res.send(err.msg);
-        } else {
-            res.json(forum);
+    }).populate(
+        { path: 'admins', select: 'username' }
+    ).exec(
+        (err, forum) => {
+            if (err) {
+                res.send(err.msg);
+            } else {
+                res.json(forum);
+            }
         }
-    });
+    );
 }
 
 export const getSections = (req, res) => {
