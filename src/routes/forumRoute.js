@@ -3,7 +3,7 @@ import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
 import { addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
-import { getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
+import { getForum, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
 import { addSection, editSection } from '../controllers/adminController';
 
 const forumRoutes = (app) => {
@@ -14,7 +14,7 @@ const forumRoutes = (app) => {
     *  put: edit fourm info
     */
     app.route('/')
-        .get(notImplemented)
+        .get(getForum)
         .all(methodNotAllowed);
 
     /*

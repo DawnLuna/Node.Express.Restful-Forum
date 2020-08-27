@@ -1,6 +1,22 @@
 import mongoose from 'mongoose';
 
-import { Section, Thread, Reply } from '../models/forumSchema';
+import { Forum, Section, Thread, Reply } from '../models/forumSchema';
+
+export const getForum = (req, res) => {
+    Forum.findOne({}, {
+        _id: 0,
+        id: 0,
+        __v: 0,
+        createdAt: 0,
+        updatedAt: 0
+    }, (err, forum) => {
+        if (err) {
+            res.send(err.msg);
+        } else {
+            res.json(forum);
+        }
+    });
+}
 
 export const getSections = (req, res) => {
     Section.find(
