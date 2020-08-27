@@ -20,7 +20,7 @@ const loadForumAdmins = (callback) => {
             admins.forumaAdmins = [];
             for (const forum of forums) {
                 for (const uid of forum.admins) {
-                    admins.forumaAdmins.push(uid);
+                    admins.forumaAdmins.push(uid+"");
                 }
             }
             console.log('Forum admins loaded!');
@@ -40,7 +40,7 @@ const loadSectionAdmins = (callback) => {
             for (const section of sections) {
                 admins.sectionAdmins[section._id] = [];
                 for (const uid of section.admins) {
-                    admins.sectionAdmins[section._id].push(uid);
+                    admins.sectionAdmins[section._id].push(uid+"");
                 }
             }
             console.log('Section admins loaded!');
