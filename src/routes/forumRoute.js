@@ -2,9 +2,9 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
-import { addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
+import { forumValidator, addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
 import { getForum, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
-import { addSection, editSection } from '../controllers/adminController';
+import { editForum, addSection, editSection } from '../controllers/adminController';
 
 const forumRoutes = (app) => {
 
@@ -15,6 +15,7 @@ const forumRoutes = (app) => {
     */
     app.route('/')
         .get(getForum)
+        .put(authCheck, loginCheck, forumValidator, editForum)
         .all(methodNotAllowed);
 
     /*

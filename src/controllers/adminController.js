@@ -1,4 +1,29 @@
-import { Section } from '../models/forumSchema';
+import { Forum, Section } from '../models/forumSchema';
+
+export const editForum = (req, res) => {
+    if (!req.app.locals.admins.forumaAdmins.includes(req.user.uid)) {
+        return res.status(403).json({ succes: false, message: "Invlid permission!" })
+    }
+    Forum.findOneAndUpdate(
+        {},
+        {
+            name: req.body.name,
+            description: req.body.description,
+            shortDescription: req.body.shortDescription
+        },
+        {
+            returnOriginal: false
+        },
+        (err, forum) => {
+            if (err) return res.status(500).json({ succes: false, message: "Database error!" });
+            forum.id = undefined;
+            forum.__v = undefined;
+            forum.createdAt = undefined;
+            forum.updatedAt = undefined;
+            forum._id = undefined;
+            res.json(forum);
+        });
+}
 
 export const addSection = (req, res) => {
     let newSection = new Section(req.body);

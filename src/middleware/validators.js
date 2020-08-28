@@ -160,3 +160,36 @@ export const replyValidator = [
         next();
     },
 ];
+
+export const forumValidator = [
+    check('name')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Name required!')
+        .isLength({ min: 2 })
+        .withMessage('Minimum 2 characters required!')
+        .bail(),
+    check('description')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Description required!')
+        .isLength({ min: 2 })
+        .withMessage('Minimum 2 characters required!')
+        .bail(),
+    check('shortDescription')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Short description required!')
+        .isLength({ min: 2 })
+        .withMessage('Minimum 2 characters required!')
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    },
+];
