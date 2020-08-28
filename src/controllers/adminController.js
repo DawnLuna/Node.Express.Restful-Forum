@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Forum, Section } from '../models/forumSchema';
 import { User } from '../models/userSchema';
 
@@ -110,6 +111,9 @@ export const editForum = (req, res) => {
 }
 
 export const addSection = (req, res) => {
+    if (!isFourmAdmins(req, req.user.uid)) {
+        return res.status(403).json({ succes: false, message: "Invlid permission!" })
+    }
     let newSection = new Section(req.body);
     newSection.save((err, section) => {
         if (err) {
@@ -123,6 +127,9 @@ export const addSection = (req, res) => {
 }
 
 export const editSection = (req, res) => {
+    if (!isFourmAdmins(req, req.user.uid)) {
+        return res.status(403).json({ succes: false, message: "Invlid permission!" })
+    }
     if (!mongoose.Types.ObjectId.isValid(req.params.sid)) {
         return res.status(400).json({ succes: false, message: "Invalid section id!" });
     }
