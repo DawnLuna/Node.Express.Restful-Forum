@@ -96,6 +96,31 @@ export const updatePasswordValidator = [
     }
 ];
 
+export const adminValidator = [
+    check('_id')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Uid required!')
+        .isLength({ min: 24, max: 24 })
+        .withMessage('Uid should be 24 characters!')
+        .bail(),
+    check('username')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('Username required!')
+        .isLength({ min: 3 })
+        .withMessage('Username requires minimum 3 characters!')
+        .bail(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(422).json({ succes: false, errors: errors.array() });
+        next();
+    }
+];
+
 export const addSectionValidator = [
     check('title')
         .trim()

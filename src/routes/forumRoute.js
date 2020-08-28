@@ -2,7 +2,7 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
-import { forumValidator, addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
+import { forumValidator, adminValidator, addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
 import { getForum, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
 import { addForumAdmin, removeForumAdmin, editForum, addSection, editSection } from '../controllers/adminController';
 
@@ -19,8 +19,8 @@ const forumRoutes = (app) => {
         .all(methodNotAllowed);
 
     app.route('/admin')
-        .post(authCheck, loginCheck, addForumAdmin)
-        .delete(authCheck, loginCheck, removeForumAdmin)
+        .post(authCheck, loginCheck, adminValidator, addForumAdmin)
+        .delete(authCheck, loginCheck, adminValidator, removeForumAdmin)
         .all(methodNotAllowed);
 
     /*
