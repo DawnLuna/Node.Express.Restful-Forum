@@ -1,7 +1,11 @@
 import { Forum, Section } from '../models/forumSchema';
 
+const isFourmAdmins = (req) => {
+    return req.app.locals.admins.forumaAdmins.includes(req.user.uid);
+}
+
 export const editForum = (req, res) => {
-    if (!req.app.locals.admins.forumaAdmins.includes(req.user.uid)) {
+    if (!isFourmAdmins(req)) {
         return res.status(403).json({ succes: false, message: "Invlid permission!" })
     }
     Forum.findOneAndUpdate(
