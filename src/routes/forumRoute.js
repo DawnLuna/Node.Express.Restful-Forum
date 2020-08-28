@@ -4,7 +4,7 @@ import { notImplemented } from '../middleware/http5xxErrors';
 import { authCheck, loginCheck } from '../controllers/authController';
 import { forumValidator, adminValidator, addSectionValidator, threadValidator, replyValidator } from '../middleware/validators';
 import { getForum, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
-import { addForumAdmin, removeForumAdmin, editForum, addSection, editSection } from '../controllers/adminController';
+import { addForumAdmin, removeForumAdmin, editForum, addSection, editSection, addSectionAdmin, removeSectionAdmin } from '../controllers/adminController';
 
 const forumRoutes = (app) => {
 
@@ -24,13 +24,31 @@ const forumRoutes = (app) => {
         .all(methodNotAllowed);
 
     /*
+    * '/admin/section'
+    *  post: add new sections (logging requird)
+    */
+    app.route('/admin/section')
+        .post(authCheck, loginCheck, addSectionValidator, addSection)
+        .all(methodNotAllowed);
+
+    /*
+    * '/section'
+    *  post: add section admins (logging requird)
+    *  put: edit section (logging requird)
+    *  delete: remove section admins (logging requird)
+    */
+    app.route('/admin/section/:sid')
+        .post(authCheck, loginCheck, adminValidator, addSectionAdmin)
+        .put(authCheck, loginCheck, addSectionValidator, editSection)
+        .delete(authCheck, loginCheck, adminValidator, removeSectionAdmin)
+        .all(methodNotAllowed);
+
+    /*
     * '/section'
     *  get: list all sections
-    *  post: add new sections (logging requird)
     */
     app.route('/section')
         .get(getSections)
-        .post(authCheck, loginCheck, addSectionValidator, addSection)
         .all(methodNotAllowed);
 
     /*
@@ -43,7 +61,6 @@ const forumRoutes = (app) => {
     app.route('/section/:sid')
         .get(getThreads)
         .post(authCheck, loginCheck, threadValidator, postThread)
-        .put(authCheck, loginCheck, addSectionValidator, editSection)
         .delete(notImplemented)
         .all(methodNotAllowed);
 

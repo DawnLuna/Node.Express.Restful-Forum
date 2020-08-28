@@ -26,6 +26,16 @@ const newAdminValidation = async (user) => {
 }
 
 /*
+* methed: isSectionAdmins
+* @param: req, sid, uid
+* @return the user(uid) is an admin of the section(sid)
+*/
+const isSectionAdmins = (req, sid, uid) => {
+    return req.app.locals.admins.sectionAdmins[sid].includes(uid);
+}
+
+
+/*
 * methed: addForumAdmin
 * playload: { _id, username}
 */
@@ -75,7 +85,7 @@ export const removeForumAdmin = (req, res) => {
             if (err) {
                 return res.status(500).json({ succes: false, message: error.message });
             } else {
-                const index = req.app.locals.admins.forumaAdmins.indexOf(req.body._id+"");
+                const index = req.app.locals.admins.forumaAdmins.indexOf(req.body._id + "");
                 if (index > -1) {
                     req.app.locals.admins.forumaAdmins.splice(index, 1);
                 }
@@ -151,6 +161,63 @@ export const editSection = (req, res) => {
                 section.__v = undefined;
                 section.hidden = undefined;
                 res.json(section);
+            }
+        }
+    );
+}
+
+export const addSectionAdmin = (req, res) => {
+    if (!isFourmAdmins(req, req.user.uid)) {
+        return res.status(403).json({ succes: false, message: "Invlid permission!" })
+    }
+    if (!mongoose.Types.ObjectId.isValid(req.params.sid)) {
+        return res.status(400).json({ succes: false, message: "Invalid section id!" });
+    }
+    if (isSectionAdmins(req, req.params.sid, req.body._id)) {
+        return res.status(400).json({ succes: false, message: "This user is already an admin of the section!" })
+    }
+
+    let addAdmin = async () => {
+        try {
+            let section = await Section.findOne({ _id: req.params.sid }).exec();
+            if (!section) {
+                return res.status(400).json({ succes: false, message: "Section information not found!" });
+            } else {
+                section.admins.push(req.body._id + "");
+                section.save();
+                req.app.locals.admins.sectionAdmins[req.params.sid].push(req.body._id + "");
+                return res.status(400).json({ succes: true, message: `${req.body.username} is now an admin!` });
+            }
+        } catch (error) {
+            return res.status(500).json({ succes: false, message: error.message });
+        }
+    }
+    addAdmin();
+
+}
+
+export const removeSectionAdmin = (req, res) => {
+    if (!isFourmAdmins(req, req.user.uid)) {
+        return res.status(403).json({ succes: false, message: "Invlid permission!" })
+    }
+    if (!mongoose.Types.ObjectId.isValid(req.params.sid)) {
+        return res.status(400).json({ succes: false, message: "Invalid section id!" });
+    }
+    if (!isSectionAdmins(req, req.params.sid, req.body._id)) {
+        return res.status(400).json({ succes: false, message: "This user is NOT an admin of the section!" })
+    }
+    Section.updateOne(
+        { _id: req.params.sid },
+        { $pullAll: { admins: [req.body._id] } },
+        (err, section) => {
+            if (err) {
+                return res.status(500).json({ succes: false, message: error.message });
+            } else {
+                const index = req.app.locals.admins.sectionAdmins[req.params.sid].includes(req.body._id + "");
+                if (index > -1) {
+                    req.app.locals.admins.sectionAdmins[req.params.sid].splice(index, 1);
+                }
+                return res.json({ succes: true, message: `${req.body.username} is now an admin!` });
             }
         }
     );
