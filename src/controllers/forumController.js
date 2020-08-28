@@ -23,13 +23,15 @@ export const getForum = (req, res) => {
 }
 
 export const getSections = (req, res) => {
-    Section.find(
-        { hidden: false },
-        {
-            __v: 0,
-            hidden: 0,
-            createdAt: 0
-        },
+    Section.find({
+        hidden: false
+    }, {
+        __v: 0,
+        hidden: 0,
+        createdAt: 0
+    }).populate(
+        { path: 'admins', select: 'username' }
+    ).exec(
         (err, sections) => {
             if (err) {
                 res.send(err.massage);
