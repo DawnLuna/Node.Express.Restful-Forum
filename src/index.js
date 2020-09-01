@@ -5,11 +5,8 @@ import cors from 'cors';
 import compression from 'compression';
 import helmet from 'helmet';
 
-import { notFound } from './middleware/http4xxErrors';
 import { loadAdmins } from './middleware/admins';
-import forumRoutes from './routes/forumRoute';
-import userRoutes from './routes/userRoute';
-
+import routes from './routes/routes';
 
 const app = express();
 const PORT = process.env.APP_PORT;
@@ -33,9 +30,6 @@ app.use(compression());
 loadAdmins(app);
 
 //routes
-forumRoutes(app);
-userRoutes(app);
-
-app.use(notFound);
+routes(app);
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}!`));

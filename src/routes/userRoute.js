@@ -2,15 +2,15 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 import { notImplemented } from '../middleware/http5xxErrors';
 
 import { userRegistrationValidator, userLoginValidator, updatePasswordValidator } from '../middleware/validators';
-import { register, login, authCheck, changePassword } from '../controllers/authController';
+import { register, login, authCheck, changePassword, loginCheck } from '../controllers/authController';
 import { getUserInfoById } from '../controllers/userController';
 
 const userRoutes = (app) => {
 
     /*
     *  '/user'
-    *  put: change user setting
-    *  delete: deactivate user
+    *  put: change user setting by self
+    *  delete: deactivate user by self
     */
     app.route('/user')
         .put(notImplemented)
@@ -35,21 +35,22 @@ const userRoutes = (app) => {
 
     /*
     * '/user/password'
-    *  put: change password (logging requird)
+    *  put: change password (logging and validator requird)
     *  post: reset password (validator requird)
     */
     app.route('/user/password')
-        .put(authCheck, updatePasswordValidator, changePassword)
+        .put(authCheck, loginCheck, updatePasswordValidator, changePassword)
         .post(notImplemented)
         .all(methodNotAllowed);
 
     /*
     * '/user/:uid'
-    *  get: get info of the user by uid (logging requird)
+    *  get: get info of the user by uid
     */
     app.route('/user/:uid')
         .get(getUserInfoById)
         .all(methodNotAllowed);
 
 };
+
 export default userRoutes;

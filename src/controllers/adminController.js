@@ -140,12 +140,12 @@ export const editSection = (req, res) => {
     if (!isFourmAdmins(req, req.user.uid)) {
         return res.status(403).json({ succes: false, message: "Invlid permission!" })
     }
-    if (!mongoose.Types.ObjectId.isValid(req.params.sid)) {
+    if (!mongoose.Types.ObjectId.isValid(req.body.sid)) {
         return res.status(400).json({ succes: false, message: "Invalid section id!" });
     }
     Section.findOneAndUpdate(
         {
-            _id: req.params.sid
+            _id: req.body.sid
         },
         {
             title: req.body.title,
