@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { Forum, Section, Thread, Reply } from '../models/forumSchema';
+import { User } from '../models/userSchema';
 
 export const getForum = (req, res) => {
     Forum.findOne({}, {
@@ -72,11 +73,44 @@ export const postThread = (req, res) => {
         content: req.body.content
     };
     let newThread = new Thread(threadData);
+    let posing = async () => {
+        let section = await Section.findById(req.params.sid).exec();
+        if(!section) return res.status(400).json({ succes: false, message: "Section dose not exist!" });
+        await newThread.save();
+        newThread.__v = undefined;
+        section.replyCount += 1;
+        await section.save();
+        await User.findOneAndUpdate(
+            { _id: newThread.author },
+            { $inc: { threadCount: 1 } },
+            { returnOriginal: false }
+        ).exec();
+        Thread.populate(newThread, { path: 'author', select: 'username' },
+            (err, fullTread) => {
+                if (err) return res.json(newThread);
+                fullTread.__v = undefined;
+                return res.json(fullTread);
+            }
+        );
+    }
+    try {
+        posing();
+    } catch (error) {
+        handleError(res, error.message);
+    }
+    /**
+     * 
     newThread.save((err, thread) => {
         if (err) {
             res.send(err.massage);
         } else {
             thread.__v = undefined;
+            User.findOneAndUpdate(
+                { _id: thread.author },
+                { $inc: { threadCount: 1 } },
+                { returnOriginal: false },
+                (userErr, user) => { }
+            );
             Section.findOneAndUpdate(
                 { _id: thread.section },
                 { $inc: { threadCount: 1 } },
@@ -94,6 +128,7 @@ export const postThread = (req, res) => {
             );
         }
     });
+     */
 };
 
 export const editThread = (req, res) => {
@@ -174,30 +209,33 @@ export const postReply = (req, res) => {
         content: req.body.content
     }
     let newReply = new Reply(replyData);
-    newReply.save((err, reply) => {
-        if (err) {
-            res.send(err.massage);
-        } else {
-            reply.__v = undefined;
-            Thread.findOneAndUpdate(
-                { _id: reply.tid },
-                {
-                    $inc: { replyCount: 1 }
-                },
-                {
-                    returnOriginal: false,
-                    upsert: false
-                }, (countErr, thread) => {
-                    Reply.populate(reply, { path: 'author', select: 'username' },
-                        (err, fullReply) => {
-                            if (err) return res.json(reply);
-                            return res.json(fullReply);
-                        }
-                    );
-                }
-            );
-        }
-    });
+
+    let posing = async () => {
+        let thread = await Thread.findById(req.params.tid).exec();
+        if(!thread) return res.status(400).json({ succes: false, message: "Thread dose not exist!" });
+        await newReply.save();
+        newReply.__v = undefined;
+        thread.replyCount += 1;
+        await thread.save();
+        await User.findOneAndUpdate(
+            { _id: newReply.author },
+            { $inc: { replyCount: 1 } },
+            { returnOriginal: false }
+        ).exec();
+        Reply.populate(newReply, { path: 'author', select: 'username' },
+            (err, fullReply) => {
+                if (err) return res.json(reply);
+                fullReply.__v = undefined;
+                return res.json(fullReply);
+            }
+        );
+    }
+    try {
+        posing();
+    } catch (error) {
+        handleError(res, error.message);
+    }
+
 };
 
 export const getReply = (req, res) => {
