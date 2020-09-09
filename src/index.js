@@ -23,6 +23,7 @@ mongoose.connect(`mongodb://${process.env.MONGODB_ADDRESS}/${process.env.MONGODB
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.options('*', cors());
+app.use(cors());
 app.use(helmet());
 app.use(compression());
 

@@ -32,7 +32,7 @@ const ThreadSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     replyCount: { type: Number, default: 0 },
-    slug: String
+    slug: { type: String, default: '' },
 },
     { timestamps: true }
 );

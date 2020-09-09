@@ -2,7 +2,7 @@ import { methodNotAllowed } from '../middleware/http4xxErrors';
 
 import { authCheck, loginCheck } from '../controllers/authController';
 import { threadValidator, replyValidator } from '../middleware/validators';
-import { getForum, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
+import { getForum, getSection, getSections, getThreads, postThread, editThread, getThread, getReplies, postReply, getReply, editReply } from '../controllers/forumController';
 
 const forumRoutes = (app) => {
 
@@ -25,12 +25,20 @@ const forumRoutes = (app) => {
 
     /*
     * '/section/:sid'
-    *  get: list all thread in the section by id 
+    *  get: get info of a section
     *  post: add new thread to the section by id (logging requird)
     */
     app.route('/section/:sid')
-        .get(getThreads)
+        .get(getSection)
         .post(authCheck, loginCheck, threadValidator, postThread)
+        .all(methodNotAllowed);
+
+    /*
+    * '/threads/:sid'
+    *  get: list all threads in the section by id 
+    */
+    app.route('/threads/:sid')
+        .get(getThreads)
         .all(methodNotAllowed);
 
     /*

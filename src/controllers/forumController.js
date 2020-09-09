@@ -23,6 +23,28 @@ export const getForum = (req, res) => {
     );
 }
 
+export const getSection = (req, res) => {
+    let sid = req.params.sid;
+    Section.findOne({
+        _id: sid,
+        hidden: false
+    }, {
+        __v: 0,
+        hidden: 0,
+        createdAt: 0
+    }).populate(
+        { path: 'admins', select: 'username' }
+    ).exec(
+        (err, section) => {
+            if (err) {
+                res.send(err.massage);
+            } else {
+                res.json(section);
+            }
+        }
+    );
+};
+
 export const getSections = (req, res) => {
     Section.find({
         hidden: false
@@ -78,7 +100,7 @@ export const postThread = (req, res) => {
         if(!section) return res.status(400).json({ succes: false, message: "Section dose not exist!" });
         await newThread.save();
         newThread.__v = undefined;
-        section.replyCount += 1;
+        section.threadCount += 1;
         await section.save();
         await User.findOneAndUpdate(
             { _id: newThread.author },
@@ -98,37 +120,6 @@ export const postThread = (req, res) => {
     } catch (error) {
         handleError(res, error.message);
     }
-    /**
-     * 
-    newThread.save((err, thread) => {
-        if (err) {
-            res.send(err.massage);
-        } else {
-            thread.__v = undefined;
-            User.findOneAndUpdate(
-                { _id: thread.author },
-                { $inc: { threadCount: 1 } },
-                { returnOriginal: false },
-                (userErr, user) => { }
-            );
-            Section.findOneAndUpdate(
-                { _id: thread.section },
-                { $inc: { threadCount: 1 } },
-                {
-                    returnOriginal: false,
-                    upsert: false
-                }, (countErr, section) => {
-                    Thread.populate(thread, { path: 'author', select: 'username' },
-                        (err, fullTread) => {
-                            if (err) return res.json(thread);
-                            return res.json(fullTread);
-                        }
-                    );
-                }
-            );
-        }
-    });
-     */
 };
 
 export const editThread = (req, res) => {

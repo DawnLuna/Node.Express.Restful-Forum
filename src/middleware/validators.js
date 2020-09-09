@@ -8,7 +8,7 @@ export const userRegistrationValidator = [
         .withMessage('Username required!')
         .isLength({ min: 3 })
         .withMessage('Minimum 3 characters required!')
-        .isLength({ max: 14 })
+        .isLength({ max: 20 })
         .withMessage('Maximum 14 characters required!')
         .bail(),
     check('email')
