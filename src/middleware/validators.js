@@ -130,11 +130,19 @@ export const addSectionValidator = [
         .withMessage('Title required!')
         .isLength({ min: 4 })
         .withMessage('Minimum 4 characters required!')
+        .isLength({ max: 64 })
+        .withMessage('Maximum 64 characters required!')
         .bail(),
     check('description')
         .trim()
         .escape()
         .not()
+        .isEmpty()
+        .withMessage('Description required!')
+        .isLength({ min: 4 })
+        .withMessage('Minimum 4 characters required!')
+        .isLength({ max: 256 })
+        .withMessage('Maximum 256 characters required!')
         .bail(),
     (req, res, next) => {
         const errors = validationResult(req);
