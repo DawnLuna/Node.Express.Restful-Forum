@@ -13,12 +13,21 @@ const adminRoutes = (app) => {
     * '/admin'
     *  post: add a forum admin as a forum admin
     *  put: edit fourm as a forum admin
-    *  delete: remove a forum admin as a forum admin
     */
     app.route('/admin')
         .post(authCheck, loginCheck, adminValidator, addForumAdmin)
         .put(authCheck, loginCheck, forumValidator, editForum)
-        .delete(authCheck, loginCheck, adminValidator, removeForumAdmin)
+        .all(methodNotAllowed);
+
+
+    /* 
+    * '/admin'
+    *  post: add a forum admin as a forum admin
+    *  put: edit fourm as a forum admin
+    *  delete: remove the forum admin(:uid/:username) as a forum admin
+    */
+    app.route('/admin/:uid/:username')
+        .delete(authCheck, loginCheck, removeForumAdmin)
         .all(methodNotAllowed);
 
     /* 

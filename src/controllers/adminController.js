@@ -57,8 +57,9 @@ export const addForumAdmin = (req, res) => {
             } else {
                 forum.admins.push(req.body._id + "");
                 forum.save();
+                await Forum.populate(forum, { path: 'admins', select: 'username' })
                 req.app.locals.admins.forumaAdmins.push(req.body._id + "");
-                return res.status(400).json({ succes: true, message: `${req.body.username} is now an admin!` });
+                return res.status(200).json({ succes: true, message: `${req.body.username} is now an admin!`, forum: forum });
             }
         } catch (error) {
             return res.status(500).json({ succes: false, message: error.message });
@@ -75,21 +76,22 @@ export const removeForumAdmin = (req, res) => {
     if (!isFourmAdmins(req, req.user.uid)) {
         return res.status(403).json({ succes: false, message: "Invlid permission!" })
     }
-    if (!isFourmAdmins(req, req.body._id)) {
+    if (!isFourmAdmins(req, req.params.uid)) {
         return res.status(400).json({ succes: false, message: "This user is NOT an admin of the forum!" })
     }
-    Forum.updateOne(
-        {},
-        { $pullAll: { admins: [req.body._id] } },
-        (err, forum) => {
+
+    Forum.findOneAndUpdate(
+        {}, { $pullAll: { admins: [req.params.uid] } }, { new: true },
+        async (err, forum) => {
             if (err) {
                 return res.status(500).json({ succes: false, message: error.message });
             } else {
-                const index = req.app.locals.admins.forumaAdmins.indexOf(req.body._id + "");
+                const index = req.app.locals.admins.forumaAdmins.indexOf(req.params.uid + "");
                 if (index > -1) {
                     req.app.locals.admins.forumaAdmins.splice(index, 1);
                 }
-                return res.status(400).json({ succes: true, message: `${req.body.username} is not an admin anymore!` });
+                forum = await Forum.populate(forum, { path: 'admins', select: 'username' });
+                return res.status(200).json({ succes: true, message: `${req.params.username} is not an admin anymore!`, forum: forum });
             }
         }
     );
@@ -137,7 +139,7 @@ export const addSection = (req, res) => {
 }
 
 export const editSection = (req, res) => {
-    if (!isFourmAdmins(req, req.user.uid)) {
+    if (!isFourmAdmins(req, req.user.uid)&&isSectionAdmins(req, req.body.sid, req.user.uid)) {
         return res.status(403).json({ succes: false, message: "Invlid permission!" })
     }
     if (!mongoose.Types.ObjectId.isValid(req.body.sid)) {
