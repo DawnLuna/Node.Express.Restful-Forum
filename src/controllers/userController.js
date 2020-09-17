@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 export const getUserInfoById = (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
-        return res.status(400).json({ succes: false, message: "invalid uid" });
+        return res.status(400).json({ success: false, message: "invalid uid" });
     }
     User.findOne(
         {
@@ -17,9 +17,9 @@ export const getUserInfoById = (req, res) => {
         },
         (err, user) => {
             if (err) {
-                return res.status(502).send({ succes: false, message: "Error finding user!", error: err });
+                return res.status(502).send({ success: false, message: "Error finding user!", error: err });
             } else if (!user) {
-                return res.status(404).send({ succes: true, message: "User not found", error: err });
+                return res.status(404).send({ success: true, message: "User not found", error: err });
             } else {
                 return res.json(user);
             }

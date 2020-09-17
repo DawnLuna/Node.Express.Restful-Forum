@@ -21,9 +21,7 @@ const adminRoutes = (app) => {
 
 
     /* 
-    * '/admin'
-    *  post: add a forum admin as a forum admin
-    *  put: edit fourm as a forum admin
+    * '/admin/:uid/:username'
     *  delete: remove the forum admin(:uid/:username) as a forum admin
     */
     app.route('/admin/:uid/:username')

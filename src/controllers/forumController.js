@@ -97,7 +97,7 @@ export const postThread = (req, res) => {
     let newThread = new Thread(threadData);
     let posing = async () => {
         let section = await Section.findById(req.params.sid).exec();
-        if(!section) return res.status(400).json({ succes: false, message: "Section dose not exist!" });
+        if(!section) return res.status(400).json({ success: false, message: "Section dose not exist!" });
         await newThread.save();
         newThread.__v = undefined;
         section.threadCount += 1;
@@ -148,7 +148,7 @@ export const editThread = (req, res) => {
 
 export const getThread = (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.tid)) {
-        return res.status(400).json({ succes: false, message: "Invalid thread id!" });
+        return res.status(400).json({ success: false, message: "Invalid thread id!" });
     }
     Thread.findOne(
         {
@@ -203,7 +203,7 @@ export const postReply = (req, res) => {
 
     let posing = async () => {
         let thread = await Thread.findById(req.params.tid).exec();
-        if(!thread) return res.status(400).json({ succes: false, message: "Thread dose not exist!" });
+        if(!thread) return res.status(400).json({ success: false, message: "Thread dose not exist!" });
         await newReply.save();
         newReply.__v = undefined;
         thread.replyCount += 1;
@@ -231,7 +231,7 @@ export const postReply = (req, res) => {
 
 export const getReply = (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.pid)) {
-        return res.status(400).json({ succes: false, message: "Invalid reply id!" });
+        return res.status(400).json({ success: false, message: "Invalid reply id!" });
     }
     Reply.findOne(
         {
