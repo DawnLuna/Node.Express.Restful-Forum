@@ -29,11 +29,11 @@ const adminRoutes = (app) => {
         .all(methodNotAllowed);
 
     /* 
-    * '/admin/user'
+    * '/admin/user/:uid'
     *  put: change user setting as a forum admin
     *  delete: deactivate/reactive user as a forum admin
     */
-    app.route('/admin/user')
+    app.route('/admin/user/:uid')
         .put(notImplemented)
         .delete(notImplemented)
         .all(methodNotAllowed);
@@ -42,20 +42,28 @@ const adminRoutes = (app) => {
     * '/admin/section'
     *  post: add new sections as a forum admin
     *  put: edit section as a forum admin or section admin
-    *  delete: hide/unhide a section as a forum admin
     */
     app.route('/admin/section')
         .post(authCheck, loginCheck, addSectionValidator, addSection)
         .put(authCheck, loginCheck, addSectionValidator, editSection)
-        .delete(notImplemented)
         .all(methodNotAllowed);
 
     /*
     * '/admin/section/:sid'
-    *  post: add section admins as a forum admin
-    *  delete: hide/unhide section admins as a forum admin
+    *  put: edit section info (forum admin required)
+    *  delete: hide/unhide section admins (forum admin required)
     */
     app.route('/admin/section/:sid')
+        .put(notImplemented)
+        .delete(notImplemented)
+        .all(methodNotAllowed);
+
+    /*
+    * '/admin/section/admin/:sid'
+    *  post: add section admins (forum admin required)
+    *  delete: delete section admins
+    */
+    app.route('/admin/section/admin/:sid/:uid')
         .post(authCheck, loginCheck, adminValidator, addSectionAdmin)
         .delete(authCheck, loginCheck, adminValidator, removeSectionAdmin)
         .all(methodNotAllowed);
