@@ -52,7 +52,9 @@ export const getSections = (req, res) => {
         __v: 0,
         hidden: 0,
         createdAt: 0
-    }).populate(
+    }).sort(
+        { 'index': 'asc' }
+    ).populate(
         { path: 'admins', select: 'username' }
     ).exec(
         (err, sections) => {
@@ -76,6 +78,8 @@ export const getThreads = (req, res) => {
             content: 0,
             __v: 0
         }
+    ).sort(
+        { 'updatedAt': 'desc' }
     ).populate({ path: 'author', select: 'username' }).exec(
         (err, threads) => {
             if (err) {
@@ -97,7 +101,7 @@ export const postThread = (req, res) => {
     let newThread = new Thread(threadData);
     let posing = async () => {
         let section = await Section.findById(req.params.sid).exec();
-        if(!section) return res.status(400).json({ success: false, message: "Section dose not exist!" });
+        if (!section) return res.status(400).json({ success: false, message: "Section dose not exist!" });
         await newThread.save();
         newThread.__v = undefined;
         section.threadCount += 1;
@@ -203,7 +207,7 @@ export const postReply = (req, res) => {
 
     let posing = async () => {
         let thread = await Thread.findById(req.params.tid).exec();
-        if(!thread) return res.status(400).json({ success: false, message: "Thread dose not exist!" });
+        if (!thread) return res.status(400).json({ success: false, message: "Thread dose not exist!" });
         await newReply.save();
         newReply.__v = undefined;
         thread.replyCount += 1;
