@@ -1,6 +1,6 @@
 {
   "name": "node.express.restful-forum",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,9 @@
     "debug-x": "DEBUG=express:* nodemon --exec babel-node ./src/index.js",
     "debug-win": "set DEBUG=express:* & nodemon --exec babel-node ./src/index.js",
     "build": "babel src --out-dir dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "reset-forum": "babel-node ./src/scripts/reset.js",
+    "init-forum": "babel-node ./src/scripts/initiator.js"
   },
   "author": "",
   "license": "MIT",
@@ -19,14 +21,15 @@
     "dotenv": "^8.2.0",
     "express": "^4.18.2",
     "express-validator": "^6.6.1",
+    "helmet": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^5.9.27",
+    "mongoose": "^5.10.4",
     "nodemon": "^2.0.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.0",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
-    "@babel/preset-env": "^7.11.0"
+    "@babel/preset-env": "^7.11.5"
   }
 }
